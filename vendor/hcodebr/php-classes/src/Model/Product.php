@@ -52,15 +52,15 @@ class Product extends Model {
 
 	public function get($idproduct){
 
-        $sql = new Sql();
+		$sql = new Sql();
 
-        $results = $sql->select("SELECT * FROM tb_products WHERE idproduct = :idproduct", [
-            ':idproduct'=>$idproduct
-        ]);
+		$results = $sql->select("SELECT * FROM tb_products WHERE idproduct = :idproduct", [
+			':idproduct'=>$idproduct
+		]);
 
-        $this->setData($results[0]);
+		$this->setData($results[0]);
 
-    }
+	}
 
     public function delete(){
 
