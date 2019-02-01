@@ -129,7 +129,8 @@ class User extends Model {
 
 	}
 
-	public function save(){
+	public function save()
+	{
 		$sql = new Sql();
 		$results = $sql->select("CALL sp_users_save(:desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", array(
 			":desperson"=>utf8_decode($this->getdesperson()),
@@ -139,6 +140,7 @@ class User extends Model {
 			":nrphone"=>$this->getnrphone(),
 			":inadmin"=>$this->getinadmin()
 		));
+		
 		$this->setData($results[0]);
 	}
 
@@ -321,6 +323,30 @@ class User extends Model {
 
 		$_SESSION[User::ERROR_REGISTER] = $msg;
 
+	}
+
+	public static function getErrorRegister(){
+
+		$msg = (isset($_SESSION[User::ERROR_REGISTER]) && $_SESSION[User::ERROR_REGISTER]) ? $_SESSION[User::ERROR_REGISTER] : '';
+
+		User::clearErrorRegister();
+
+		return $msg;
+
+	}
+
+	public static function clearErrorRegister(){
+
+		$_SESSION[User::ERROR_REGISTER] = NULL;
+
+	}
+
+	public static function checkLoginExist($login){
+		$sql = new Sql();
+		$results = $sql->select("SELECT * FROM tb_users WHERE deslogin = :deslogin", [
+			':deslogin'=>$login
+		]);
+		return (count($results) > 0);
 	}
 	
 	public static function getPasswordHash($password){
