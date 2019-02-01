@@ -252,8 +252,9 @@ class User extends Model {
 
     }
 
-    public static function validForgotDecrypt($code){
-		$idrecovery = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, User::SECRET, base64_decode($code), MCRYPT_MODE_ECB);
+    public static function validForgotDecrypt($code)
+	{
+		$idrecovery = base64_encode(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, User::SECRET, base64_decode($code), MCRYPT_MODE_ECB));
 		$sql = new Sql();
 		$results = $sql->select("
 			SELECT * 
