@@ -140,8 +140,9 @@ class User extends Model {
 			":nrphone"=>$this->getnrphone(),
 			":inadmin"=>$this->getinadmin()
 		));
-		
-		$this->setData($results[0]);
+		if(count($results) >= 1){
+			$this->setData($results[0]);
+		}
 	}
 
 	public function get($iduser)
@@ -197,7 +198,7 @@ class User extends Model {
 		", array(
 			":email"=>$email
 		));
-
+		
 		if (count($results) === 0)
 		{
 			throw new \Exception("Não foi possível recuperar a senha.");
@@ -254,7 +255,7 @@ class User extends Model {
 
     public static function validForgotDecrypt($code)
 	{
-		$idrecovery = base64_encode(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, User::SECRET, base64_decode($code), MCRYPT_MODE_ECB));
+		$idrecovery = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, User::SECRET, base64_decode($code), MCRYPT_MODE_ECB);
 		$sql = new Sql();
 		$results = $sql->select("
 			SELECT * 
@@ -270,6 +271,7 @@ class User extends Model {
 		", array(
 			":idrecovery"=>$idrecovery
 		));
+		
 		if (count($results) === 0)
 		{
 			throw new \Exception("Não foi possível recuperar a senha.");
@@ -320,6 +322,22 @@ class User extends Model {
 
 	}
 
+	public static function setSuccess($msg)
+	{
+		$_SESSION[User::SUCCESS] = $msg;
+	}
+	public static function getSuccess()
+	{
+		$msg = (isset($_SESSION[User::SUCCESS]) && $_SESSION[User::SUCCESS]) ? $_SESSION[User::SUCCESS] : '';
+		User::clearSuccess();
+		return $msg;
+	}
+	public static function clearSuccess()
+	{
+		$_SESSION[User::SUCCESS] = NULL;
+	}
+
+
 	public static function setErrorRegister($msg){
 
 		$_SESSION[User::ERROR_REGISTER] = $msg;
@@ -342,7 +360,7 @@ class User extends Model {
 
 	}
 
-	public static function checkLoginExist($login){
+	public static function checkLoginExists($login){
 		$sql = new Sql();
 		$results = $sql->select("SELECT * FROM tb_users WHERE deslogin = :deslogin", [
 			':deslogin'=>$login

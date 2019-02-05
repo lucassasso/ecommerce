@@ -29,16 +29,17 @@ $app->post('/admin/login', function() {
     User::login($_POST["login"], $_POST["password"]);
 
     header("Location: /admin");
-
     exit;
     
 });
 
 $app->get('/admin/logout', function(){
+
     User::logout();
 
     header("Location: /admin/login");
     exit;
+
 });
 
 $app->get("/admin/forgot", function(){
@@ -97,9 +98,7 @@ $app->post("/admin/forgot/reset", function(){
 
     $user->get((int)$forgot["iduser"]);
 
-    $password = password_hash($_POST["password"], PASSWORD_DEFAULT, [
-        "cost"=>12
-    ]);
+    $password = User::getPasswordHash($_POST["password"]);
 
     $user->setPassword($password);
     

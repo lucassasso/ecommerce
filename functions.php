@@ -10,17 +10,19 @@ function formatPrice($vlprice){
 
 }
 
-function checkLogin($inadmin = true) {
+function checkLogin($inadmin = true)
+{
 
-    return User::checkLogin($inadmin);
+	return User::checkLogin($inadmin);
 
 }
 
-function getUserName(){
+function getUserName()
+{
 
-    $user = User::getFromSession();
+	$user = User::getFromSession();
 
-    return $user->getdesperson();
+	return $user->getdesperson();
 
 }
 
